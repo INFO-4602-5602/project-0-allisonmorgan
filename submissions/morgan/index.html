@@ -44,19 +44,19 @@
         var csvDatas = ['data/anscombe_I.csv', 'data/anscombe_II.csv', 'data/anscombe_III.csv', 'data/anscombe_IV.csv']
 
         // Put your part one code here ***********************
-        d3.csv('data/anscombe_I.csv', function(csvData) {
+        d3.csv(csvDatas[0], function(csvData) {
             var anscombe_I = csvData;
             checkDataset(anscombe_I);
         });
-        d3.csv('data/anscombe_II.csv', function(csvData) {
+        d3.csv(csvDatas[1], function(csvData) {
             var anscombe_II = csvData;
             checkDataset(anscombe_II);
         });
-        d3.csv('data/anscombe_III.csv', function(csvData) {
+        d3.csv(csvDatas[2], function(csvData) {
             var anscombe_III = csvData;
             checkDataset(anscombe_III);
         });
-        d3.csv('data/anscombe_IV.csv', function(csvData) {
+        d3.csv(csvDatas[3], function(csvData) {
             var anscombe_IV = csvData;
             checkDataset(anscombe_IV);
         });
@@ -69,69 +69,82 @@
                 $("#partOne").append("<p>data loaded incorrectly. Try using the debugger to help you find the bug!</p>");
         }
 
-        d3.csv('data/anscombe_I.csv', function(csvData) {
-            var anscombe_I = csvData;
-            
-            // Put your part two code here ***********************
-            var barHeight = 20;
+        buildBarchart('data/anscombe_I.csv', xVal);
+        buildBarchart('data/anscombe_I.csv', yVal);
 
-            // Scale height of each bar
-            var yScale = d3.scale.linear()
-                    .domain([d3.min(anscombe_I, function(d) {return parseFloat(d[xVal]);}), d3.max(anscombe_I, function(d) {return parseFloat(d[xVal]);})])
-                    .range([h - yOffset - margin, margin]);
-            var xScale = d3.scale.linear().domain([0, anscombe_I.length])
-                    .range([xOffset + margin, w - margin])
+        function buildBarchart(data, value) {
+            d3.csv(data, function(csvData) {
+                var anscombe_I = csvData;
+                
+                // Put your part two code here ***********************
+                var barHeight = 20;
 
-            // Create an SVG element to contain our visualization
-            var chart = d3.select("#barchart")
-                            .append("svg:svg")
-                            .attr("width", w)
-                            .attr("height", h);
+                // Scale height of each bar
+                var yScale = d3.scale.linear()
+                        .domain([0, d3.max(anscombe_I, function(d) {return parseFloat(d[value]);})])
+                        .range([h - yOffset - margin, margin]);
+                var xScale = d3.scale.linear().domain([0, anscombe_I.length])
+                        .range([xOffset + margin, w - margin])
 
-            // Create x- and y-axes. Add a graphics element to hold the axes.
-            var xAxis = d3.svg.axis()
-                      .scale(xScale)
-                      .orient("bottom")
-                      .ticks(10);
-            var xAxisG = chart.append('g')
-                    .attr('class', 'axis')
-                    .attr('transform', 'translate(0, ' + (h - yOffset) + ')')
-                    .style("fill", "#C2D4B6")
-                    .call(xAxis);
+                // Create an SVG element to contain our visualization
+                var chart = d3.select("#barchart")
+                                .append("svg:svg")
+                                .attr("width", w)
+                                .attr("height", h);
 
-            var yAxis = d3.svg.axis()
-                      .scale(yScale)
-                      .orient("left")
-                      .ticks(5);
-            var yAxisG = chart.append('g')
-                    .attr('class', 'axis')
-                    .attr('transform', 'translate(' + xOffset + ', 0)')
-                    .style("fill", "#C2D4B6")
-                    .call(yAxis);
+                // Create x- and y-axes. Add a graphics element to hold the axes.
+                var xAxis = d3.svg.axis()
+                          .scale(xScale)
+                          .orient("bottom")
+                          .ticks(10);
+                var xAxisG = chart.append('g')
+                        .attr('class', 'axis')
+                        .attr('transform', 'translate(0, ' + (h - yOffset) + ')')
+                        .style("fill", "#C2D4B6")
+                        .call(xAxis);
 
-            // Add a labels that shows the user what that axes represent
-            var xLabel = chart.append("text")
-                    .attr('class', 'label')
-                    .attr('x', w/2)
-                    .attr('y', h - yOffset/2)
-                    .text(xVal);
-            var yLabel = chart.append("text")
-                    .attr('class', 'label')
-                    .attr('x', (xOffset/2) - margin)
-                    .attr('y', h/2)
-                    .text(yVal);
-            
-            // Create a bar chart using the x-values (labelled x) for one of the four datasets (your choice of which one).
-            var bar = chart.selectAll("rect").data(anscombe_I).enter().append("rect");
+                var yAxis = d3.svg.axis()
+                          .scale(yScale)
+                          .orient("left")
+                          .ticks(5);
+                var yAxisG = chart.append('g')
+                        .attr('class', 'axis')
+                        .attr('transform', 'translate(' + xOffset + ', 0)')
+                        .style("fill", "#C2D4B6")
+                        .call(yAxis);
 
-            // The height of the bar should correspond to the x-value of the data, the order of the bars should correspond to either their natural order in the dataset or to the relative x-value.
+                // Add a labels that shows the user what that axes represent
+                var xLabel = chart.append("text")
+                        .attr('class', 'label')
+                        .attr('x', w/2)
+                        .attr('y', h - yOffset/2)
+                        .text('row');
+                var yLabel = chart.append("text")
+                        .attr('class', 'label')
+                        .attr('x', (xOffset/2) - margin - 2)
+                        .attr('y', (h-margin-yOffset)/2)
+                        .text(value);
+                
+                // Create a bar chart using the x-values (labelled x) for one of the four datasets (your choice of which one).
+                var bar = chart.selectAll("rect").data(anscombe_I).enter().append("rect");
+                bar.attr("id", function(d, i) { return "rect-" + i; });
 
-            bar.style("fill", "#375156")
-                .attr("x", function(d, i) { return xScale(i); })
-                .attr("y", function(d, i) { return h - yScale(d[xVal]) - yOffset; })
-                .attr("width", function(d) { return  barHeight; })
-                .attr("height", function(d, i) {return yScale(d[xVal]); });
-        });
+                // The height of the bar should correspond to the x-value of the data, the order of the bars should correspond to either their natural order in the dataset or to the relative x-value.
+                bar.style("fill", "#375156")
+                    .attr("x", function(d, i) { return xScale(i); })
+                    .attr("y", function(d, i) { return yScale(d[value]); })
+                    .attr("width", function(d) { return  barHeight; })
+                    .attr("height", function(d, i) {return h - margin - yOffset - yScale(d[value]); });
+
+                // Put your part 2 - coordinated views code here
+                var correspondingBar = chart.selectAll("rect")
+                    .each(function(d, i) {
+                        var select = d3.selectAll("#rect-" + i);
+                        select.on('mouseover', function() {select.style("fill", "#9FAF6D");});
+                        select.on('mouseout', function() {select.style("fill", "#375156");});
+                    });
+            });
+        };
 
         // A drop-down menu for selecting a state; uses the "menu" namespace.
         var dropDown = d3.select("#partThree").append("select")
@@ -145,22 +158,44 @@
                 .attr("x", xOffset + margin)
                 .attr("value", function (d) { return d; });
 
+        createSimpleScatter(csvDatas[0]);
         dropDown.on("change", function(){
-            d3.csv(d3.event.target.value, function(csvData) {
+            createSimpleScatter(d3.event.target.value);
+        });
+        
+        // Put your part five code here ***********************
+        createScatter('data/anscombe_I.csv', '#scatterplotSet', "Anscombe I");
+        createScatter('data/anscombe_II.csv', '#scatterplotSet', "Anscombe II");
+        createScatter('data/anscombe_III.csv', '#scatterplotSet', "Anscombe III");
+        createScatter('data/anscombe_IV.csv', '#scatterplotSet', "Anscombe IV");
+
+        function createLine(data) {
+            var xMean = d3.mean(data, function(d) { return d[xVal]});
+            var yMean = d3.mean(data, function(d) { return d[yVal]});
+
+            var slope = d3.sum(data, function(d) { return (d[xVal] - xMean)*(d[yVal] - yMean)})/ d3.sum(data, function(d) { return (d[xVal] - xMean)*(d[xVal] - xMean)});
+            var yIntercept = yMean - slope*xMean;
+
+            return [slope, yIntercept];
+        };
+
+        function createSimpleScatter(data) {
+            d3.csv(data, function(csvData) {
                 var anscombe_I = csvData;
 
                 // Put your part three & four code here ***********************
                 // Scale the x and y values
                 var yScale = d3.scale.linear()
-                        .domain([d3.min(anscombe_I, function(d) {return parseFloat(d[yVal]);}), d3.max(anscombe_I, function(d) {return parseFloat(d[yVal]);})])
+                        .domain([0, d3.max(anscombe_I, function(d) {return parseFloat(d[yVal]);})])
                         .range([h - yOffset - margin, margin]);
                 var xScale = d3.scale.linear()
-                        .domain([d3.min(anscombe_I, function(d) {return parseFloat(d[xVal]);}), d3.max(anscombe_I, function(d) {return parseFloat(d[xVal]);})])
+                        .domain([0, d3.max(anscombe_I, function(d) {return parseFloat(d[xVal]);})])
                         .range([xOffset + margin, w - margin]);
 
                 // Create an SVG element to contain our visualization
                 d3.select("#scatterplot")
                     .select("svg").remove();
+                d3.select("#scatterLabel").select("text").remove();
                 var chart = d3.select("#scatterplot")
                                 .append("svg:svg")
                                 .attr("width", w)
@@ -208,10 +243,14 @@
                 // Update our selection
                 point.attr('class', 'point')                                
                     .attr('cx', function(d) { return xScale(d[xVal]); })    
-                    .attr('cy', function(d) { return yScale(d[yVal]); })    
-                    .attr('r', 5)                                           
-                    .style("fill", "#375156")                                           
-                    .each(function() {
+                    .attr('cy', function(d) { return yScale(d[yVal]); }) 
+                    .attr('r', 0)                                         
+                    .style("fill", "#375156")
+                    .transition()
+                    .duration(2500)   
+                    .attr('r', 5);  
+
+                point.each(function() {
                         var select = d3.select(this);
                         select.on('mouseover', function() {select.style("fill", "#9FAF6D");});
                         select.on('mouseout', function() {select.style("fill", "#375156");});
@@ -225,22 +264,6 @@
                     .append('svg:title').text(function(d) {return "(" + d[xVal] + ", " + d[yVal] + ")";})
                     .on('mouseover', function() {return d3.tooltip.style("visibility", "visible");});
             });
-        });
-        
-        // Put your part five code here ***********************
-        createScatter('data/anscombe_I.csv', '#scatterplotSet', "Anscombe I");
-        createScatter('data/anscombe_II.csv', '#scatterplotSet', "Anscombe II");
-        createScatter('data/anscombe_III.csv', '#scatterplotSet', "Anscombe III");
-        createScatter('data/anscombe_IV.csv', '#scatterplotSet', "Anscombe IV");
-
-        function createLine(data) {
-            var xMean = d3.mean(data, function(d) { return d[xVal]});
-            var yMean = d3.mean(data, function(d) { return d[yVal]});
-
-            var slope = d3.sum(data, function(d) { return (d[xVal] - xMean)*(d[yVal] - yMean)})/ d3.sum(data, function(d) { return (d[xVal] - xMean)*(d[xVal] - xMean)});
-            var yIntercept = yMean - slope*xMean;
-
-            return [slope, yIntercept];
         };
 
         function createScatter(data, className, title) {    
@@ -249,10 +272,10 @@
 
                 // Scale the x and y values
                 var yScale = d3.scale.linear()
-                    .domain([d3.min(anscombe, function(d) {return parseFloat(d[yVal]);}), d3.max(anscombe, function(d) {return parseFloat(d[yVal]);})])
+                    .domain([0, d3.max(anscombe, function(d) {return parseFloat(d[yVal]);})])
                     .range([h - yOffset - margin, margin]);
                 var xScale = d3.scale.linear()
-                    .domain([d3.min(anscombe, function(d) {return parseFloat(d[xVal]);}), d3.max(anscombe, function(d) {return parseFloat(d[xVal]);})])
+                    .domain([0, d3.max(anscombe, function(d) {return parseFloat(d[xVal]);})])
                     .range([xOffset + margin, w - margin]);
 
                 // Create an SVG element to contain our visualization
@@ -298,7 +321,7 @@
                 var point = chart.selectAll(".point").data(anscombe).enter().append("svg:circle");
 
                 // Update our selection
-                point.attr('class', 'point')                            // Give it a class
+                point.attr('class', 'point')                                // Give it a class
                     .attr('cx', function(d) { return xScale(d[xVal]); })    // x-coordinate
                     .attr('cy', function(d) { return yScale(d[yVal]); })    // y-coordinate
                     .attr('r', 5)                                           // radius
