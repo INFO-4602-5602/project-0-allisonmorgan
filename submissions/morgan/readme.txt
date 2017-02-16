@@ -7,12 +7,17 @@ I worked on Parts 1-5 and a few of the Bells ("Tooltips" and "Best Fit Lines") w
 
 ### Parts 1-5: Interpreting Data, Building Bars, Building Scatterplots, Interaction, Building Multiple Charts
 
-If you use code from any online sources, please also list those sources and what pieces of the code you used those sources to complete.
+> TODO: If you use code from any online sources, please also list those sources and what pieces of the code you used those sources to complete.
 
 ## Bells & Whistles:
 
 ### Bells: Tooltips, Styling your Visualization, Best Fit Lines
-Add a note in your readme.txt explaining the inspiration for your styling choices.
+
+For the "Styling your Visualization" Bell, I drew inspiration from Vincent Van Gogh's ["The Starry Night"](https://en.wikipedia.org/wiki/The_Starry_Night). I used an [online tool](http://palettegenerator.com/) to generate a color palette from the painting and selected a few of the most distinct colors (i.e. blue, green, and black).
 
 ### Whistles: Transitions, Coordinated Views, Replication
+
+I used Google Sheets as my WYSIWYG tool for the "Replication" whistle. Screenshots are provided in the `replication` folder, as well as the document is visible here: https://docs.google.com/a/colorado.edu/spreadsheets/d/1kN-cNlsJ61Lwhh95oTRaJR-O-YGq5Ip2jy9fe27oi78/edit?usp=sharing
+
+> TODO: In your readme.txt, outline how you created each visualization in the WYSIWYG system and what differences you experienced in assembling that visualization.
 
